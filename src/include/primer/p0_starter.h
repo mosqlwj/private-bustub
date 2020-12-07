@@ -176,11 +176,11 @@ class RowMatrixOperations {
                                                     std::unique_ptr<RowMatrix<T>> matB,
                                                     std::unique_ptr<RowMatrix<T>> matC) {
     // TODO(P0): Add code
-    std::unique_ptr<RowMatrix<T>> rs1 = MultiplyMatrices(matA, matB);
+    std::unique_ptr<RowMatrix<T>> rs1 (MultiplyMatrices(matA, matB));
     if (rs1 == nullptr) {
       return rs1;
     }
-    std::unique_ptr<RowMatrix<T>> rs2 = AddMatrices(rs1, matC);
+    std::unique_ptr<RowMatrix<T>> rs2 (AddMatrices(rs1, matC));
     return rs2;
   }
 };
