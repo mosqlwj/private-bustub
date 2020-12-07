@@ -22,7 +22,7 @@ namespace bustub {
 template <typename T>
 class Matrix {
  protected:
-  // TODO(P0): Add implementation
+  // NOTE: 初始化列表中初始化的顺序应该和变量在类中声明的顺序相同
   Matrix(int r, int c) : rows(r), cols(c), linear(new T[r * c]) {
     for (int i = 0; i < r * c; i++) {
       linear[i] = 0;
@@ -33,9 +33,7 @@ class Matrix {
   int rows;
   // # of Columns in the matrix
   int cols;
-  // Flattened array containing the elements of the matrix
-  // TODO(P0) : Allocate the array in the constructor. Don't forget to free up
-  // the array in the destructor.
+  // NOTE:在构造函数中申请，在析构函数中释放
   T *linear;
 
  public:
@@ -54,14 +52,14 @@ class Matrix {
   // Sets the matrix elements based on the array arr
   virtual void MatImport(T *arr) = 0;
 
-  // TODO(P0): Add implementation
+  // NOTE: delete释放单个对象和释放数组的区别，释放数组是delete[]
   virtual ~Matrix() { delete[](linear); }
 };
 
 template <typename T>
 class RowMatrix : public Matrix<T> {
  public:
-  // TODO(P0): Add implementation
+  // NOTE: 动态申请二维数组，是通过一个一维的指针数组，然后为每个指针申请对应的行数组
   RowMatrix(int r, int c) : Matrix<T>(r, c) {
     data_ = new int *[r];
     for (int i = 0; i < r; i++) {
@@ -74,13 +72,12 @@ class RowMatrix : public Matrix<T> {
     }
   }
 
-  // TODO(P0): Add implementation
+  // TODO: 是否是因为访问基类的成员变量，所以要用this?
   int GetRows() override { return this->rows; }
 
-  // TODO(P0): Add implementation
+  // TODO:同上
   int GetColumns() override { return this->cols; }
 
-  // TODO(P0): Add implementation
   T GetElem(int i, int j) override {
     if (i < 0 || i >= GetRows() || j < 0 || j >= GetColumns()) {
       return -1;
@@ -88,7 +85,6 @@ class RowMatrix : public Matrix<T> {
     return data_[i][j];
   }
 
-  // TODO(P0): Add implementation
   void SetElem(int i, int j, T val) override {
     if (i < 0 || i >= GetRows() || j < 0 || j >= GetColumns()) {
       return;
@@ -97,9 +93,7 @@ class RowMatrix : public Matrix<T> {
     this->linear[i * GetColumns() + j] = val;
   }
 
-  // TODO(P0): Add implementation
   void MatImport(T *arr) override {
-    // 是用arr指向的内容填写本矩阵的内容？
     int index = 0;
     for (int i = 0; i < GetRows(); i++) {
       for (int j = 0; j < GetColumns(); j++) {
@@ -110,7 +104,7 @@ class RowMatrix : public Matrix<T> {
     }
   }
 
-  // TODO(P0): Add implementation
+  // TODO: 不用显式调用基类的析构函数？
   ~RowMatrix() override {
     // ~Matrix<T>();
     for (int i = 0; i < GetRows(); i++) {
@@ -149,10 +143,9 @@ class RowMatrixOperations {
 
   // Compute matrix multiplication (mat1 * mat2) and return the result.
   // Return nullptr if dimensions mismatch for input matrices.
-  // 注意矩阵乘法是MxN * N*M 得到M*M，所以要看匹不匹配是看前一个的列和后一个的行是否匹配
+  // 矩阵乘法是MxN * N*M 得到M*M，所以要看匹不匹配是看前一个的列和后一个的行是否匹配
   static std::unique_ptr<RowMatrix<T>> MultiplyMatrices(std::unique_ptr<RowMatrix<T>> mat1,
                                                         std::unique_ptr<RowMatrix<T>> mat2) {
-    // TODO(P0): Add code
     if (mat1->GetRows() != mat2->GetColumns()) {
       return std::unique_ptr<RowMatrix<T>>(nullptr);
     }
@@ -175,7 +168,7 @@ class RowMatrixOperations {
   static std::unique_ptr<RowMatrix<T>> GemmMatrices(std::unique_ptr<RowMatrix<T>> matA,
                                                     std::unique_ptr<RowMatrix<T>> matB,
                                                     std::unique_ptr<RowMatrix<T>> matC) {
-    // TODO(P0): Add code
+    // NOTE: unique_ptr不能被复制，只能被move
     std::unique_ptr<RowMatrix<T>> rs1(std::move(MultiplyMatrices(std::move(matA), std::move(matB))));
     if (rs1 == nullptr) {
       return rs1;
