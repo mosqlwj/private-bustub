@@ -128,8 +128,8 @@ class RowMatrixOperations {
   // Return nullptr if dimensions mismatch for input matrices.
   static std::unique_ptr<RowMatrix<T>> AddMatrices(std::unique_ptr<RowMatrix<T>> mat1,
                                                    std::unique_ptr<RowMatrix<T>> mat2) {
-    // TODO(P0): Add code
     if (mat1->GetRows() != mat2->GetRows() || mat1->GetColumns() != mat2->GetColumns()) {
+      fprintf(stderr,"can not add %d %d\n",mat1->GetRows(),mat1->GetColumns());
       return std::unique_ptr<RowMatrix<T>>(nullptr);
     }
     std::unique_ptr<RowMatrix<T>> mat(new RowMatrix<T>(mat1->GetRows(), mat1->GetColumns()));
@@ -146,17 +146,17 @@ class RowMatrixOperations {
   // 矩阵乘法是MxN * N*M 得到M*M，所以要看匹不匹配是看前一个的列和后一个的行是否匹配
   static std::unique_ptr<RowMatrix<T>> MultiplyMatrices(std::unique_ptr<RowMatrix<T>> mat1,
                                                         std::unique_ptr<RowMatrix<T>> mat2) {
-    if (mat1->GetRows() != mat2->GetColumns()) {
+    if (mat1->GetColumns() != mat2->GetRows()) {
+      fprintf(stderr,"can not multiply\n");
       return std::unique_ptr<RowMatrix<T>>(nullptr);
     }
-    std::unique_ptr<RowMatrix<T>> mat(new RowMatrix<T>(mat1->GetRows(), mat1->GetColumns()));
+    std::unique_ptr<RowMatrix<T>> mat(new RowMatrix<T>(mat1->GetRows(), mat2->GetColumns()));
     for (int i = 0; i < mat1->GetRows(); i++) {
       for (int j = 0; j < mat2->GetColumns(); j++) {
         for (int k = 0; k < mat1->GetColumns(); k++) {
           // fprintf(stderr,"mat(%d,%d) %d +mat1(%d,%d) %d * mat2(%d,%d) %d
           // ",i,j,mat->GetElem(i,j),i,k,mat1->GetElem(i,k),k,j,mat2->GetElem(k,j));
           mat->SetElem(i, j, mat->GetElem(i, j) + mat1->GetElem(i, k) * mat2->GetElem(k, j));
-          // fprintf(stderr,"%d\n",mat->GetElem(i,j));
         }
       }
     }
@@ -171,9 +171,14 @@ class RowMatrixOperations {
     // NOTE: unique_ptr不能被复制，只能被move
     std::unique_ptr<RowMatrix<T>> rs1(std::move(MultiplyMatrices(std::move(matA), std::move(matB))));
     if (rs1 == nullptr) {
+      fprintf(stderr,"multiply rs is null\n");
       return rs1;
     }
     std::unique_ptr<RowMatrix<T>> rs2(std::move(AddMatrices(std::move(rs1), std::move(matC))));
+    if (rs2 == nullptr) {
+      fprintf(stderr,"add rs is null\n");
+      return rs2;
+    }
     return rs2;
   }
 };
