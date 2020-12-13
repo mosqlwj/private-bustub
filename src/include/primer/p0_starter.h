@@ -72,10 +72,10 @@ class RowMatrix : public Matrix<T> {
     }
   }
 
-  // TODO: 是否是因为访问基类的成员变量，所以要用this?
+  // NOTE: 是否是因为访问基类的成员变量，所以要用this?
   int GetRows() override { return this->rows; }
 
-  // TODO:同上
+  // NOTE:同上
   int GetColumns() override { return this->cols; }
 
   T GetElem(int i, int j) override {
@@ -104,7 +104,7 @@ class RowMatrix : public Matrix<T> {
     }
   }
 
-  // TODO: 不用显式调用基类的析构函数？
+  // NOTE: 不用显式调用基类的析构函数？
   ~RowMatrix() override {
     // ~Matrix<T>();
     for (int i = 0; i < GetRows(); i++) {
@@ -115,7 +115,7 @@ class RowMatrix : public Matrix<T> {
 
  private:
   // 2D array containing the elements of the matrix in row-major format
-  // TODO(P0): Allocate the array of row pointers in the constructor. Use these pointers
+  // NOTE(P0): Allocate the array of row pointers in the constructor. Use these pointers
   // to point to corresponding elements of the 'linear' array.
   // Don't forget to free up the array in the destructor.
   T **data_;
@@ -129,7 +129,7 @@ class RowMatrixOperations {
   static std::unique_ptr<RowMatrix<T>> AddMatrices(std::unique_ptr<RowMatrix<T>> mat1,
                                                    std::unique_ptr<RowMatrix<T>> mat2) {
     if (mat1->GetRows() != mat2->GetRows() || mat1->GetColumns() != mat2->GetColumns()) {
-      fprintf(stderr,"can not add %d %d\n",mat1->GetRows(),mat1->GetColumns());
+      fprintf(stderr, "can not add %d %d\n", mat1->GetRows(), mat1->GetColumns());
       return std::unique_ptr<RowMatrix<T>>(nullptr);
     }
     std::unique_ptr<RowMatrix<T>> mat(new RowMatrix<T>(mat1->GetRows(), mat1->GetColumns()));
@@ -147,7 +147,7 @@ class RowMatrixOperations {
   static std::unique_ptr<RowMatrix<T>> MultiplyMatrices(std::unique_ptr<RowMatrix<T>> mat1,
                                                         std::unique_ptr<RowMatrix<T>> mat2) {
     if (mat1->GetColumns() != mat2->GetRows()) {
-      fprintf(stderr,"can not multiply\n");
+      fprintf(stderr, "can not multiply\n");
       return std::unique_ptr<RowMatrix<T>>(nullptr);
     }
     std::unique_ptr<RowMatrix<T>> mat(new RowMatrix<T>(mat1->GetRows(), mat2->GetColumns()));
@@ -171,12 +171,12 @@ class RowMatrixOperations {
     // NOTE: unique_ptr不能被复制，只能被move
     std::unique_ptr<RowMatrix<T>> rs1(std::move(MultiplyMatrices(std::move(matA), std::move(matB))));
     if (rs1 == nullptr) {
-      fprintf(stderr,"multiply rs is null\n");
+      fprintf(stderr, "multiply rs is null\n");
       return rs1;
     }
     std::unique_ptr<RowMatrix<T>> rs2(std::move(AddMatrices(std::move(rs1), std::move(matC))));
     if (rs2 == nullptr) {
-      fprintf(stderr,"add rs is null\n");
+      fprintf(stderr, "add rs is null\n");
       return rs2;
     }
     return rs2;
