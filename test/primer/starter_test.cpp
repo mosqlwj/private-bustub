@@ -79,4 +79,38 @@ TEST(StarterTest, MultiplyMatricesTest) {
     }
   }
 }
+
+TEST(StarterTest, GEMMTest) {
+  // Multiply
+  int arr1[6] = {1, 2, 3, 4, 5, 6};
+  std::unique_ptr<RowMatrix<int>> mat1_ptr{new RowMatrix<int>(2, 3)};
+  mat1_ptr->MatImport(&arr1[0]);
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 3; j++) {
+      EXPECT_EQ(arr1[i * 3 + j], mat1_ptr->GetElem(i, j));
+    }
+  }
+
+  int arr2[6] = {-2, 1, -2, 2, 2, 3};
+  std::unique_ptr<RowMatrix<int>> mat2_ptr{new RowMatrix<int>(3, 2)};
+  mat2_ptr->MatImport(&arr2[0]);
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 2; j++) {
+      EXPECT_EQ(arr2[i * 2 + j], mat2_ptr->GetElem(i, j));
+    }
+  }
+
+  int arr3[4] = {0, 14, -6, 32};
+  std::unique_ptr<RowMatrix<int>> product_ptr{new RowMatrix<int>(2, 2)};
+  product_ptr->MatImport(&arr3[0]);
+
+  // 现在来测试GEMM
+  std::unique_ptr<RowMatrix<int>> rs_ptr =
+      RowMatrixOperations<int>::GemmMatrices(std::move(mat1_ptr), std::move(mat2_ptr), std::move(product_ptr));
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 2; j++) {
+      EXPECT_EQ(arr3[i * 2 + j] * 2 , rs_ptr->GetElem(i, j));
+    }
+  }
+}
 }  // namespace bustub
