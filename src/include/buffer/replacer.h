@@ -30,21 +30,22 @@ class Replacer {
    * @return true if a victim frame was found, false otherwise
    */
   virtual bool Victim(frame_id_t *frame_id) = 0;
-
+  // TODO 根据具体的策略，应该被evict的frame id
   /**
    * Pins a frame, indicating that it should not be victimized until it is unpinned.
    * @param frame_id the id of the frame to pin
    */
   virtual void Pin(frame_id_t frame_id) = 0;
-
+  // 一旦pin了，那么直到unpin之前，都不应该evict
   /**
    * Unpins a frame, indicating that it can now be victimized.
    * @param frame_id the id of the frame to unpin
    */
   virtual void Unpin(frame_id_t frame_id) = 0;
-
+  // 被unpin之后，就说明可以evict了
   /** @return the number of elements in the replacer that can be victimized */
   virtual size_t Size() = 0;
+  // TODO 返回的是可以evict的，也就是被unpined
 };
 
 }  // namespace bustub

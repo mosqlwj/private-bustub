@@ -15,6 +15,7 @@
 #include <list>
 #include <mutex>  // NOLINT
 #include <vector>
+#include <unordered_map>
 
 #include "buffer/replacer.h"
 #include "common/config.h"
@@ -28,6 +29,7 @@ class LRUReplacer : public Replacer {
  public:
   /**
    * Create a new LRUReplacer.
+   * // TODO 这里说num_pages是最多的需要处理的数量，所以不需要考虑满了还unpin的情况？
    * @param num_pages the maximum number of pages the LRUReplacer will be required to store
    */
   explicit LRUReplacer(size_t num_pages);
@@ -47,6 +49,10 @@ class LRUReplacer : public Replacer {
 
  private:
   // TODO(student): implement me!
+  // TODO lru_replacer有一个初始容量，问题是，如果replacer已经满了，还在pin，怎么处理？
+  int cap;
+  std::list<frame_id_t> frames;
+  std::unordered_map<frame_id_t,int> cnt;
 };
 
 }  // namespace bustub
