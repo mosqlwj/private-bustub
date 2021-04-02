@@ -14,8 +14,8 @@
 
 #include <list>
 #include <mutex>  // NOLINT
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "buffer/replacer.h"
 #include "common/config.h"
@@ -48,11 +48,10 @@ class LRUReplacer : public Replacer {
   size_t Size() override;
 
  private:
-  // TODO(student): implement me!
-  // TODO lru_replacer有一个初始容量，问题是，如果replacer已经满了，还在pin，怎么处理？
+
   int cap;
   std::list<frame_id_t> frames;
-  std::unordered_map<frame_id_t,int> cnt;
+  std::unordered_map<frame_id_t, int> cnt;
 };
 
 }  // namespace bustub

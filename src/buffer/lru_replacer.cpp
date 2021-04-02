@@ -29,7 +29,7 @@ bool LRUReplacer::Victim(frame_id_t *frame_id) {
     return false;
   }
   *frame_id = frames.back();
-  cnt[*frame_id] =0;
+  cnt[*frame_id] = 0;
   frames.pop_back();
   return true;
 }
