@@ -11,7 +11,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "buffer/lru_replacer.h"
-// TODO 必须要保证是线程安全的？这里没加锁呢
+//  必须要保证是线程安全的？这里没加锁呢
 namespace bustub {
 
 LRUReplacer::LRUReplacer(size_t num_pages) { cap = num_pages; }
@@ -56,7 +56,7 @@ void LRUReplacer::Pin(frame_id_t frame_id) {
  */
 void LRUReplacer::Unpin(frame_id_t frame_id) {
   // 必须要判断存不存在，不要重复插入;如果已经存在，是什么都不需要做的，见测试case1
-  if (cnt[frame_id]) {
+  if (cnt[frame_id] > 0) {
     return;
   }
   cnt[frame_id] = 1;

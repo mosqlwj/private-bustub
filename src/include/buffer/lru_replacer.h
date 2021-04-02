@@ -48,7 +48,6 @@ class LRUReplacer : public Replacer {
   size_t Size() override;
 
  private:
-
   int cap;
   std::list<frame_id_t> frames;
   std::unordered_map<frame_id_t, int> cnt;
