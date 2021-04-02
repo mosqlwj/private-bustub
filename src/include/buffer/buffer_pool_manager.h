@@ -27,8 +27,19 @@ namespace bustub {
  * BufferPoolManager reads disk pages to and from its internal buffer pool.
  */
 class BufferPoolManager {
+ private:
+  Page *PinAndReturn(frame_id_t p) {
+    latch_.lock();
+    pages_[p].pin_count_++;
+    replacer_->Pin(p);
+    latch_.unlock();
+    return &pages_[p];
+  }
+
  public:
+  //   这个before和after是不是指使用page之前和之后？分别应该调用pin和unpin
   enum class CallbackType { BEFORE, AFTER };
+  // 为函数指针取一个别名
   using bufferpool_callback_fn = void (*)(enum CallbackType, const page_id_t page_id);
 
   /**
@@ -112,6 +123,7 @@ class BufferPoolManager {
   }
 
   /**
+   * 注意BPM的作用，它的作用就是当别人向他要一个page时，拿来，不管那个page在不在内存中
    * Fetch the requested page from the buffer pool.
    * @param page_id id of page to be fetched
    * @return the requested page
@@ -131,6 +143,7 @@ class BufferPoolManager {
    * @param page_id id of page to be flushed, cannot be INVALID_PAGE_ID
    * @return false if the page could not be found in the page table, true otherwise
    */
+  //    这个cannot be什么意思？要做参数检查吗
   bool FlushPageImpl(page_id_t page_id);
 
   /**
